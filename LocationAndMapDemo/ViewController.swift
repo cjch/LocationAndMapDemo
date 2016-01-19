@@ -8,9 +8,17 @@
 
 import UIKit
 import CoreLocation
+import MapKit
+
+class JCAnotation : NSObject, MKAnnotation {
+    var title: String?
+    var subtitle: String?
+    var coordinate = CLLocationCoordinate2D()
+}
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
 
+    @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var latitudeLabel: UILabel!
     @IBOutlet weak var longitudeLabel: UILabel!
     @IBOutlet weak var horAccLabel: UILabel!
@@ -35,6 +43,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         }
         
         locationManager?.startUpdatingLocation()
+        
+        mapView.showsUserLocation = true
     }
     
     //MARK: CLLocationManagerDelegate
@@ -59,6 +69,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         if startPoint == nil {
             startPoint = newLocation;
             distanceFromStart = 0;
+            
+            let startAnnotation = JCAnotation()
+            startAnnotation.coordinate = (startPoint?.coordinate)!
+            startAnnotation.title = "start point"
+            startAnnotation.subtitle = "xxx"
+            mapView.addAnnotation(startAnnotation)
         } else {
             self.distanceFromStart = newLocation?.distanceFromLocation(startPoint!)
         }
